@@ -1,6 +1,6 @@
-//Name: 
-//Date: 
-//Per: 
+//Name: Dominic Feliton
+//Date: 3/6/20
+//Per: 2
 //AP Comp Sci
 
 import java.awt.Color;
@@ -14,159 +14,71 @@ import static java.lang.Character.*;
 import java.awt.image.BufferedImage;
 import java.awt.event.ActionListener;
 
-public class Pong extends Canvas implements KeyListener, Runnable
+public class Pong extends AbstractPong
 {
-	private Ball ball;
-	private Paddle leftPaddle;
-	private Paddle rightPaddle;
-	private boolean[] keys;
-	private BufferedImage back;
-	private int leftScore;
-	private int rightScore;
+  private Ball ball;
+  private Paddle leftPaddle;
+  private Paddle rightPaddle;
+
+  public Pong()
+  {
+	  ball = new Ball(Color.black);
+	  
+	  leftPaddle = new Paddle(10, 0, 10, 200, 6);
+	  
+	  rightPaddle = new Paddle(780, 0, 10, 200, 6);
+  }
+
+  public void render(Graphics window)
+  {
+    ball.moveAndDraw(window);
+    leftPaddle.draw(window, Color.BLACK);
+    rightPaddle.draw(window, Color.BLACK);
+
+    if((ball.getX()<0 || ball.getX()>790))
+    {
+      ball.setXSpeed(0);
+      
+      ball.setYSpeed(0);
+    }
 
 
-	public Pong()
-	{
-		//set up all variables related to the game (except BufferedImage)
-
-
-
-
-		keys = new boolean[4];
-
+    if((ball.getY()<0 || ball.getY()>570))
+    {
+      ball.setYSpeed(-ball.getYSpeed());
+    }
     
-    	setBackground(Color.WHITE);
-		setVisible(true);
-		
-		new Thread(this).start();
-		addKeyListener(this);		//starts the key thread to log key strokes
-	}
-	
-   public void update(Graphics window){
-	   paint(window);
-   }
+    
+    if ((ball.getX() <= leftPaddle.getX()) &&
+		((leftPaddle.getY() <= ball.getY()) && (ball.getY() <= leftPaddle.getY() + leftPaddle.getHeight()) 
+		))
+    {
+    	ball.setXSpeed(-ball.getXSpeed());
+    }
+    
+    if ((ball.getX() >= rightPaddle.getX()) && //check if paddle is within bounds of x
+    		((rightPaddle.getY() <= ball.getY()) && (ball.getY() <= rightPaddle.getY() + rightPaddle.getHeight()) 
+    		))
+        {
+        	ball.setXSpeed(-ball.getXSpeed());
+        }
 
-   public void paint(Graphics window)
-   {
-		//set up the double buffering to make the game animation nice and smooth
-		Graphics2D twoDGraph = (Graphics2D)window;
-
-		//take a snap shop of the current screen and same it as an image
-		//that is the exact same width and height as the current screen
-		if(back==null)
-		   back = (BufferedImage)(createImage(getWidth(),getHeight()));
-
-		//create a graphics reference to the back ground image
-		//we will draw all changes on the background image
-		Graphics graphToBack = back.createGraphics();
-
-
-		ball.moveAndDraw(graphToBack);
-		leftPaddle.draw(graphToBack);
-		rightPaddle.draw(graphToBack);
-
-
-		//see if ball hits left wall or right wall
-		if(!(ball.getX()>=10 && ball.getX()<=780))
-		{
-			//stop and "erase" the ball
-			ball.setXSpeed(0);
-			ball.setYSpeed(0);
-
-                        //increase the score for the correct player
-
-
-                        //place the ball in a random place toward the middle of the screen
-      
-      
-
-                       //start the ball going left or right randomly
-	
-
-                       //print out the new score
-
-		       graphToBack.setColor(Color.WHITE);
-		       graphToBack.fillRect(440,520,80,80);
-
-		       graphToBack.setColor(Color.red);
- 
-		       graphToBack.drawString("rightScore = "+rightScore,400,540);
-		       graphToBack.drawString("leftScore = "+leftScore,400,560);
-
-        	}
-
-		
-		//see if the ball hits the top or bottom wall 
-                //turn it the opposite vertical direction
-
-
-
-
-		//see if the ball hits the left paddle
-		
-		
-		
-		//see if the ball hits the right paddle
-		
-		
-		
-
-
-		//see if the paddles need to be moved (look at methods below)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		
-		twoDGraph.drawImage(back, null, 0, 0);
-	}
-
-	public void keyPressed(KeyEvent e)
-	{
-		switch(toUpperCase(e.getKeyChar()))
-		{
-			case 'W' : keys[0]=true; break;
-			case 'Z' : keys[1]=true; break;
-			case 'I' : keys[2]=true; break;
-			case 'M' : keys[3]=true; break;
-		}
-	}
-
-	public void keyReleased(KeyEvent e)
-	{
-		switch(toUpperCase(e.getKeyChar()))
-		{
-			case 'W' : keys[0]=false; break;
-			case 'Z' : keys[1]=false; break;
-			case 'I' : keys[2]=false; break;
-			case 'M' : keys[3]=false; break;
-		}
-	}
-
-	public void keyTyped(KeyEvent e){}
-	
-   public void run()
-   {
-   	try
-   	{
-   		while(true)
-   		{
-   		   Thread.currentThread().sleep(8);
-            repaint();
-         }
-      }catch(Exception e)
-      {
-      }
-  	}	
+    if(keyIsPressed('W') == true)
+    {
+      leftPaddle.moveUpAndDraw(window);
+    }
+    if(keyIsPressed('Z') == true)
+    {
+      leftPaddle.moveDownAndDraw(window);
+    }
+    
+    if(keyIsPressed('I') == true)
+    {
+      rightPaddle.moveUpAndDraw(window);
+    }
+    if(keyIsPressed('M') == true)
+    {
+      rightPaddle.moveDownAndDraw(window);
+    }
+  }
 }

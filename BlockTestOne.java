@@ -5,6 +5,7 @@
 
 import static java.lang.System.*;
 import java.awt.Color;
+import java.awt.Graphics;
 
 class BlockTestOne
 {
@@ -23,6 +24,6 @@ class BlockTestOne
 		out.println(four);
 		
 		out.println(one.equals(two));
-		out.println(one.equals(one));		
+		out.println(one.equals(one));
 	}
 }
